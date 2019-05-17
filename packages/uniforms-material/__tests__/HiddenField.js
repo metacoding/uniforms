@@ -1,9 +1,10 @@
 import React from 'react';
-import {mount} from 'enzyme';
+import {cloneElement} from 'react';
 
 import HiddenField from 'uniforms-material/HiddenField';
 
 import createContext from './_createContext';
+import mount from './_mount';
 
 test('<HiddenField> - renders an input', () => {
   const element = <HiddenField name="x" />;
@@ -66,7 +67,7 @@ test('<HiddenField> - renders an input which correctly reacts on model change', 
   const element = <HiddenField name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {onChange}));
 
-  wrapper.setProps({value: 'y'});
+  wrapper.setProps({children: cloneElement(element, {value: 'y'})});
 
   expect(onChange).toHaveBeenLastCalledWith('x', 'y');
 });
@@ -77,7 +78,7 @@ test('<HiddenField> - renders an input which correctly reacts on model change (e
   const element = <HiddenField name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {onChange}));
 
-  wrapper.setProps({value: undefined});
+  wrapper.setProps({children: cloneElement(element, {value: undefined})});
 
   expect(onChange).not.toHaveBeenCalled();
 });
@@ -88,7 +89,7 @@ test('<HiddenField> - renders an input which correctly reacts on model change (s
   const element = <HiddenField name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {model: {x: 'y'}, onChange}));
 
-  wrapper.setProps({value: 'y'});
+  wrapper.setProps({children: cloneElement(element, {value: 'y'})});
 
   expect(onChange).not.toHaveBeenCalled();
 });
@@ -106,7 +107,7 @@ test('<HiddenField noDOM> - renders nothing which correctly reacts on model chan
   const element = <HiddenField noDOM name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {onChange}));
 
-  wrapper.setProps({value: 'y'});
+  wrapper.setProps({children: cloneElement(element, {value: 'y'})});
 
   expect(onChange).toHaveBeenLastCalledWith('x', 'y');
 });
@@ -117,7 +118,7 @@ test('<HiddenField noDOM> - renders nothing which correctly reacts on model chan
   const element = <HiddenField noDOM name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {onChange}));
 
-  wrapper.setProps({value: undefined});
+  wrapper.setProps({children: cloneElement(element, {value: undefined})});
 
   expect(onChange).not.toHaveBeenCalled();
 });
@@ -128,7 +129,7 @@ test('<HiddenField noDOM> - renders nothing which correctly reacts on model chan
   const element = <HiddenField noDOM name="x" />;
   const wrapper = mount(element, createContext({x: {type: String}}, {model: {x: 'y'}, onChange}));
 
-  wrapper.setProps({value: 'y'});
+  wrapper.setProps({children: cloneElement(element, {value: 'y'})});
 
   expect(onChange).not.toHaveBeenCalled();
 });

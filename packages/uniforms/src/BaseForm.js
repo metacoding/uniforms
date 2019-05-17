@@ -3,52 +3,14 @@ import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
-import mapValues from 'lodash/mapValues';
 import omit from 'lodash/omit';
 import set from 'lodash/set';
 import {Component} from 'react';
 
 import changedKeys from './changedKeys';
+import context from './context';
 import createSchemaBridge from './createSchemaBridge';
 import randomIds from './randomIds';
-
-export const __childContextTypes = {
-  name: PropTypes.arrayOf(PropTypes.string).isRequired,
-
-  error: PropTypes.object,
-  model: PropTypes.object.isRequired,
-
-  schema: {
-    getError: PropTypes.func.isRequired,
-    getErrorMessage: PropTypes.func.isRequired,
-    getErrorMessages: PropTypes.func.isRequired,
-    getField: PropTypes.func.isRequired,
-    getInitialValue: PropTypes.func.isRequired,
-    getProps: PropTypes.func.isRequired,
-    getSubfields: PropTypes.func.isRequired,
-    getType: PropTypes.func.isRequired,
-    getValidator: PropTypes.func.isRequired
-  },
-
-  state: {
-    changed: PropTypes.bool.isRequired,
-    changedMap: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
-
-    label: PropTypes.bool.isRequired,
-    disabled: PropTypes.bool.isRequired,
-    placeholder: PropTypes.bool.isRequired,
-    showInlineError: PropTypes.bool.isRequired
-  },
-
-  onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  randomId: PropTypes.func.isRequired
-};
-
-export const __childContextTypesBuild = type =>
-  isPlainObject(type) ? PropTypes.shape(mapValues(type, __childContextTypesBuild)).isRequired : type;
 
 export default class BaseForm extends Component {
   static displayName = 'Form';
@@ -84,10 +46,6 @@ export default class BaseForm extends Component {
     autosaveDelay: PropTypes.number
   };
 
-  static childContextTypes = {
-    uniforms: __childContextTypesBuild(__childContextTypes)
-  };
-
   constructor() {
     super(...arguments);
 
@@ -113,34 +71,34 @@ export default class BaseForm extends Component {
       mode !== null && this.props.modelTransform ? this.props.modelTransform(mode, model) : model;
   }
 
-  getChildContext() {
+  getContext() {
     return {
       uniforms: {
-        name: this.getChildContextName(),
-        error: this.getChildContextError(),
-        model: this.getChildContextModel(),
-        state: this.getChildContextState(),
-        schema: this.getChildContextSchema(),
-        onChange: this.getChildContextOnChange(),
-        onSubmit: this.getChildContextOnSubmit(),
+        name: this.getContextName(),
+        error: this.getContextError(),
+        model: this.getContextModel(),
+        state: this.getContextState(),
+        schema: this.getContextSchema(),
+        onChange: this.getContextOnChange(),
+        onSubmit: this.getContextOnSubmit(),
         randomId: this.randomId
       }
     };
   }
 
-  getChildContextName() {
+  getContextName() {
     return [];
   }
 
-  getChildContextError() {
+  getContextError() {
     return this.props.error;
   }
 
-  getChildContextModel() {
+  getContextModel() {
     return this.getModel('form');
   }
 
-  getChildContextState() {
+  getContextState() {
     return {
       changed: !!this.state.changed,
       changedMap: this.state.changedMap,
@@ -153,15 +111,15 @@ export default class BaseForm extends Component {
     };
   }
 
-  getChildContextSchema() {
+  getContextSchema() {
     return this.state.bridge;
   }
 
-  getChildContextOnChange() {
+  getContextOnChange() {
     return this.onChange;
   }
 
-  getChildContextOnSubmit() {
+  getContextOnSubmit() {
     return this.onSubmit;
   }
 
@@ -185,7 +143,11 @@ export default class BaseForm extends Component {
   }
 
   render() {
-    return <form {...this.getNativeFormProps()} />;
+    return (
+      <context.Provider value={this.getContext()}>
+        <form {...this.getNativeFormProps()} />
+      </context.Provider>
+    );
   }
 
   getChangedKeys(root, valueA, valueB) {

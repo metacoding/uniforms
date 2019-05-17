@@ -1,11 +1,12 @@
-import {createElement} from 'react';
+import React from 'react';
 
 import BaseField from './BaseField';
+import uniformsContext from './context';
 
 const identity = x => x;
 
 export default function connectField(
-  component,
+  Component,
   {
     baseField = BaseField,
     mapProps = identity,
@@ -17,7 +18,7 @@ export default function connectField(
   } = {}
 ) {
   return class extends baseField {
-    static displayName = `${component.displayName || component.name}${baseField.displayName || baseField.name}`;
+    static displayName = `${Component.displayName || Component.name}${baseField.displayName || baseField.name}`;
 
     constructor() {
       super(...arguments);
@@ -29,8 +30,8 @@ export default function connectField(
       if (includeParent !== undefined) this.options.includeParent = includeParent;
     }
 
-    getChildContextName() {
-      return this.options.includeInChain ? super.getChildContextName() : this.context.uniforms.name;
+    getContextName() {
+      return this.options.includeInChain ? super.getContextName() : this.context.uniforms.name;
     }
 
     componentWillMount() {
@@ -55,7 +56,11 @@ export default function connectField(
     }
 
     render() {
-      return createElement(component, mapProps(this.getFieldProps()));
+      return (
+        <uniformsContext.Provider value={this.getContext()}>
+          <Component {...mapProps(this.getFieldProps())} />
+        </uniformsContext.Provider>
+      );
     }
   };
 }

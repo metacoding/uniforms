@@ -14,15 +14,15 @@ const Bootstrap4 = parent =>
       grid: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.string])
     };
 
-    getChildContextState() {
+    getContextState() {
       return {
-        ...super.getChildContextState(),
+        ...super.getContextState(),
         grid: this.props.grid
       };
     }
 
     getNativeFormProps() {
-      const error = this.getChildContextError();
+      const error = this.getContextError();
       const {
         className,
         grid, // eslint-disable-line no-unused-vars

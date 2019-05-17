@@ -1,18 +1,11 @@
 import PropTypes from 'prop-types';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
-import merge from 'lodash/merge';
 import noop from 'lodash/noop';
 import omit from 'lodash/omit';
 import set from 'lodash/set';
 
 import BaseForm from './BaseForm';
-import {__childContextTypesBuild} from './BaseForm';
-import {__childContextTypes} from './BaseForm';
-
-const childContextTypes = __childContextTypesBuild(
-  merge({state: {validating: PropTypes.bool.isRequired}}, __childContextTypes)
-);
 
 const Validated = parent =>
   class extends parent {
@@ -39,11 +32,6 @@ const Validated = parent =>
       validate: PropTypes.oneOf(['onChange', 'onChangeAfterSubmit', 'onSubmit']).isRequired
     };
 
-    static childContextTypes = {
-      ...(parent.childContextTypes || {}),
-      uniforms: childContextTypes
-    };
-
     constructor() {
       super(...arguments);
 
@@ -53,20 +41,20 @@ const Validated = parent =>
         error: null,
         validate: false,
         validating: false,
-        validator: this.getChildContextSchema().getValidator(this.props.validator)
+        validator: this.getContextSchema().getValidator(this.props.validator)
       };
 
       this.onValidate = this.validate = this.onValidate.bind(this);
       this.onValidateModel = this.validateModel = this.onValidateModel.bind(this);
     }
 
-    getChildContextError() {
-      return super.getChildContextError() || this.state.error;
+    getContextError() {
+      return super.getContextError() || this.state.error;
     }
 
-    getChildContextState() {
+    getContextState() {
       return {
-        ...super.getChildContextState(),
+        ...super.getContextState(),
 
         validating: this.state.validating
       };
@@ -144,7 +132,7 @@ const Validated = parent =>
     }
 
     onValidate(key, value) {
-      let model = this.getChildContextModel();
+      let model = this.getContextModel();
       if (model && key) {
         model = set(cloneDeep(model), key, cloneDeep(value));
       }

@@ -1,25 +1,33 @@
-import BaseField from 'uniforms/BaseField';
 import React from 'react';
 import classnames from 'classnames';
+import context from 'uniforms/context';
 import filterDOMProps from 'uniforms/filterDOMProps';
 import nothing from 'uniforms/nothing';
+import {Component} from 'react';
 
-const ErrorsField = ({className, children, ...props}, {uniforms: {error, schema}}) =>
-  !error && !children ? (
-    nothing
-  ) : (
-    <div className={classnames('card border-danger mb-3 text-danger', className)} {...filterDOMProps(props)}>
-      <div className="card-body">
-        {children}
+class ErrorsField extends Component {
+  static contextType = context;
 
-        {schema.getErrorMessages(error).map((message, index) => (
-          <div key={index} className="disabled">
-            {message}
-          </div>
-        ))}
+  render() {
+    const {children, className, ...props} = this.props;
+    const {error, schema} = this.context.uniforms;
+
+    return !error && !children ? (
+      nothing
+    ) : (
+      <div className={classnames('card border-danger mb-3 text-danger', className)} {...filterDOMProps(props)}>
+        <div className="card-body">
+          {children}
+
+          {schema.getErrorMessages(error).map((message, index) => (
+            <div key={index} className="disabled">
+              {message}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-ErrorsField.contextTypes = BaseField.contextTypes;
+    );
+  }
+}
 
 export default ErrorsField;

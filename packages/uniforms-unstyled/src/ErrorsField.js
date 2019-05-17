@@ -1,22 +1,30 @@
-import BaseField from 'uniforms/BaseField';
 import React from 'react';
+import context from 'uniforms/context';
 import filterDOMProps from 'uniforms/filterDOMProps';
 import nothing from 'uniforms/nothing';
+import {Component} from 'react';
 
-const ErrorsField = ({children, ...props}, {uniforms: {error, schema}}) =>
-  !error && !children ? (
-    nothing
-  ) : (
-    <div {...filterDOMProps(props)}>
-      {children}
+class ErrorsField extends Component {
+  static contextType = context;
 
-      <ul>
-        {schema.getErrorMessages(error).map((message, index) => (
-          <li key={index}>{message}</li>
-        ))}
-      </ul>
-    </div>
-  );
-ErrorsField.contextTypes = BaseField.contextTypes;
+  render() {
+    const {children, ...props} = this.props;
+    const {error, schema} = this.context.uniforms;
+
+    return !error && !children ? (
+      nothing
+    ) : (
+      <div {...filterDOMProps(props)}>
+        {children}
+
+        <ul>
+          {schema.getErrorMessages(error).map((message, index) => (
+            <li key={index}>{message}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
 
 export default ErrorsField;
