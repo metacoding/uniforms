@@ -1,7 +1,7 @@
 import React from 'react';
 
 import BaseField from './BaseField';
-import uniformsContext from './context';
+import context from './context';
 
 const identity = x => x;
 
@@ -57,9 +57,9 @@ export default function connectField(
 
     render() {
       return (
-        <uniformsContext.Provider value={this.getContext()}>
+        <context.Provider value={this.getContext()}>
           <Component {...mapProps(this.getFieldProps())} />
-        </uniformsContext.Provider>
+        </context.Provider>
       );
     }
   };
