@@ -85,16 +85,16 @@ describe('BaseField', () => {
     validator() {}
   });
 
-  const _context = context => ({context: {uniforms: {...reactContextBase, ...context}}});
+  const makeContext = context => ({context: {uniforms: {...reactContextBase, ...context}}});
   const reactContextBase = {error: error1, model, name: [], randomId, schema, state, onChange, onSubmit() {}};
-  const reactContext1 = _context({});
-  const reactContext2 = _context({error: error2});
-  const reactContext3 = _context({error: {...error2}});
-  const reactContext4 = _context({name: ['a']});
-  const reactContext5 = _context({schema: Object.create(schema)});
-  const reactContext6 = _context({state: {...reactContextBase.state, changedMap: {a: {}}}});
-  const reactContext7 = _context({model: {a: {b: {c: 'example 2'}}}});
-  const reactContext8 = _context({state: {...reactContextBase.state, disabled: true}});
+  const reactContext1 = makeContext({});
+  const reactContext2 = makeContext({error: error2});
+  const reactContext3 = makeContext({error: {...error2}});
+  const reactContext4 = makeContext({name: ['a']});
+  const reactContext5 = makeContext({schema: Object.create(schema)});
+  const reactContext6 = makeContext({state: {...reactContextBase.state, changedMap: {a: {}}}});
+  const reactContext7 = makeContext({model: {a: {b: {c: 'example 2'}}}});
+  const reactContext8 = makeContext({state: {...reactContextBase.state, disabled: true}});
 
   afterEach(() => {
     onChange.mockReset();
