@@ -2,39 +2,31 @@ import React from 'react';
 import classnames from 'classnames';
 import context from 'uniforms/context';
 import filterDOMProps from 'uniforms/filterDOMProps';
-import {Component} from 'react';
+import {useContext} from 'react';
 
 import gridClassName from './gridClassName';
 
-class SubmitField extends Component {
-  static contextType = context;
+function SubmitField({className, disabled, inputClassName, inputRef, value, wrapClassName, ...props}) {
+  const {error, state} = useContext(context).uniforms;
 
-  render() {
-    const {className, disabled, inputClassName, inputRef, value, wrapClassName, ...props} = this.props;
-    const {error, state} = this.context.uniforms;
+  const hasWrap = !!(state.grid || wrapClassName);
+  const blockInput = (
+    <input
+      className={inputClassName}
+      disabled={disabled === undefined ? !!(error || state.disabled) : disabled}
+      ref={inputRef}
+      type="submit"
+      {...(value ? {value} : {})}
+    />
+  );
 
-    const hasWrap = !!(state.grid || wrapClassName);
-
-    const blockInput = (
-      <input
-        className={inputClassName}
-        disabled={disabled === undefined ? !!(error || state.disabled) : disabled}
-        ref={inputRef}
-        type="submit"
-        {...(value ? {value} : {})}
-      />
-    );
-
-    return (
-      <div className={classnames(className, {'is-invalid': error, row: state.grid})} {...filterDOMProps(props)}>
-        {hasWrap && <label className={classnames('col-form-label', gridClassName(state.grid, 'label'))}>&nbsp;</label>}
-
-        {hasWrap && <div className={classnames(wrapClassName, gridClassName(state.grid, 'input'))}>{blockInput}</div>}
-
-        {!hasWrap && blockInput}
-      </div>
-    );
-  }
+  return (
+    <div className={classnames(className, {'is-invalid': error, row: state.grid})} {...filterDOMProps(props)}>
+      {hasWrap && <label className={classnames('col-form-label', gridClassName(state.grid, 'label'))}>&nbsp;</label>}
+      {hasWrap && <div className={classnames(wrapClassName, gridClassName(state.grid, 'input'))}>{blockInput}</div>}
+      {!hasWrap && blockInput}
+    </div>
+  );
 }
 
 SubmitField.defaultProps = {inputClassName: 'btn btn-primary'};

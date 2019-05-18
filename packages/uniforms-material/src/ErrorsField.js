@@ -4,28 +4,23 @@ import React from 'react';
 import context from 'uniforms/context';
 import filterDOMProps from 'uniforms/filterDOMProps';
 import nothing from 'uniforms/nothing';
-import {Component} from 'react';
+import {useContext} from 'react';
 
-class ErrorsField extends Component {
-  static contextType = context;
+function ErrorsField({children, fullWidth, margin, variant, ...props}) {
+  const {error, schema} = useContext(context).uniforms;
 
-  render() {
-    const {children, fullWidth, margin, variant, ...props} = this.props;
-    const {error, schema} = this.context.uniforms;
-
-    return !error && !children ? (
-      nothing
-    ) : (
-      <FormControl error={!!error} fullWidth={!!fullWidth} margin={margin} variant={variant}>
-        {!!children && <FormHelperText {...filterDOMProps(props)}>{children}</FormHelperText>}
-        {schema.getErrorMessages(error).map((message, index) => (
-          <FormHelperText key={index} {...filterDOMProps(props)}>
-            {message}
-          </FormHelperText>
-        ))}
-      </FormControl>
-    );
-  }
+  return !error && !children ? (
+    nothing
+  ) : (
+    <FormControl error={!!error} fullWidth={!!fullWidth} margin={margin} variant={variant}>
+      {!!children && <FormHelperText {...filterDOMProps(props)}>{children}</FormHelperText>}
+      {schema.getErrorMessages(error).map((message, index) => (
+        <FormHelperText key={index} {...filterDOMProps(props)}>
+          {message}
+        </FormHelperText>
+      ))}
+    </FormControl>
+  );
 }
 
 ErrorsField.defaultProps = {
