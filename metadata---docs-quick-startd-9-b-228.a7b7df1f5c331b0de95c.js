@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[36],{71:function(t){t.exports={id:"quick-start",title:"Quick start",description:"```js",source:"/home/travis/build/vazco/uniforms/docs/quick-start.md",permalink:"/docs/quick-start",sidebar:"docs",category:"Getting Started",next:"overview",previous:"installation",previous_title:"Installation",next_title:"Overview"}}}]);
